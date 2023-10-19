@@ -39,7 +39,7 @@ services:
       PRODUCT_URL: http://microservices-gateway:5000/
 
   db-auth:
-    image: postgres
+    image: mysql
     environment:
       POSTGRES_DB: db-auth
       POSTGRES_USER: admin
