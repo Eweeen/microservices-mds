@@ -1,4 +1,4 @@
-# Utilisez une image Node.js comme image de base
+# Utilisez l'image Node.js comme image de base
 FROM node:17-alpine
 # Installez pnpm globalement
 RUN npm install -g pnpm
@@ -15,8 +15,8 @@ RUN pnpm install
 # Copiez le reste des fichiers de l'application dans le conteneur
 COPY . .
 
-# Exposez le port sur lequel votre application NestJS s'exécutera
+# Exposez le port sur lequel votre application Nuxt 3 s'exécutera
 EXPOSE 3000
 
 # Commande pour démarrer l'application en mode production
-CMD ["pnpm", "run", "start:dev"]
+CMD ["pnpm", "run", "dev"]
