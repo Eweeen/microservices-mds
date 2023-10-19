@@ -1,0 +1,53 @@
+version: '3'
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./ngnix/nginx.conf:/etc/nginx/nginx.conf
+
+  microservices-auth:
+    build:
+      context: ./chemin_vers_votre_app1
+    ports:
+      - "3000:3000"
+    environment:
+      POSTGRES_HOST: db1
+      POSTGRES_PORT: 5432
+    depends_on:
+      - db1
+
+  microservices-product:
+    build:
+      context: ./chemin_vers_votre_app2
+    ports:
+      - "4000:4000"
+    environment:
+      POSTGRES_HOST: db2
+      POSTGRES_PORT: 5432
+    depends_on:
+      - db2
+
+  microservices-gateway:
+    build:
+      context: ./chemin_vers_votre_gateway
+    ports:
+      - "5000:5000"
+    environment:
+      AUTH_URL: http://microservices-gateway:5000/
+      PRODUCT_URL: http://microservices-gateway:5000/
+
+  db-auth:
+    image: postgres
+    environment:
+      POSTGRES_DB: db-auth
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+
+  db-products:
+    image: postgres
+    environment:
+      POSTGRES_DB: db-products
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
