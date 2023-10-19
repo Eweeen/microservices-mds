@@ -1,26 +1,26 @@
 version: '3'
 services:
-  apache:
-    image: httpd
-    ports:
-      - "80:80"
-    volumes:
-      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
-    depends_on:
-      - microservices-auth
-      #- microservices-product
-      #- microservices-gateway
+# apache:
+#   image: httpd
+#   ports:
+#     - "80:80"
+#   volumes:
+#     - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+#   depends_on:
+#     - microservices-auth
+#     #- microservices-product
+#     #- microservices-gateway
 
-  microservices-auth:
-    build:
-      context: ./microservices/microservices-auth
-    ports:
-      - "3000:3000"
-    environment:
-      POSTGRES_HOST: db-auth
-      POSTGRES_PORT: 5432
-    depends_on:
-      - db-auth
+# microservices-auth:
+#   build:
+#     context: microservices/microservices-auth-OLD
+#   ports:
+#     - "3000:3000"
+#   environment:
+#     POSTGRES_HOST: db-auth
+#     POSTGRES_PORT: 5432
+#   depends_on:
+#     - db-auth
 
 #  microservices-product:
 #    build:
@@ -42,20 +42,30 @@ services:
 #      AUTH_URL: http://microservices-auth:3000/ # L'URL de l'authentification
 #      PRODUCT_URL: http://microservices-product:4000/ # L'URL du produit
 
-  nuxt3-app:
-    build:
-      context: ./microservices/microservices-front
-    ports:
-      - "3001:3000"
-    volumes:
-      - ./microservices/microservices-front:/app
-
+#  nuxt3-app:
+#    build:
+#      context: ./microservices/microservices-front
+#    ports:
+#      - "3001:3000"
+#    volumes:
+#      - ./microservices/microservices-front:/app
+#
   db-auth:
-    image: mysql
+    image: postgres:latest
+    container_name: db-auth
+    hostname: db-auth
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
     environment:
-      MYSQL_DATABASE: db-auth
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
+      POSTGRES_DB: db-auth
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
 
 # db-product:
 #   image: postgres
@@ -63,3 +73,7 @@ services:
 #     POSTGRES_DB: db-products
 #     POSTGRES_USER: admin
 #     POSTGRES_PASSWORD: admin
+
+networks:
+  my_network:
+    driver: bridge
