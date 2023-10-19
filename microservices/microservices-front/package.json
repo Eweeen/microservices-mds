@@ -13,6 +13,7 @@
     "@nuxt/devtools": "latest",
     "nuxt": "^3.7.4",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "@sidebase/nuxt-auth" : "^0.6.0-rc.0"
   }
 }

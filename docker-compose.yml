@@ -8,8 +8,8 @@ services:
       - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
     depends_on:
       - microservices-auth
-      - microservices-product
-      - microservices-gateway
+      #- microservices-product
+      #- microservices-gateway
 
   microservices-auth:
     build:
@@ -22,25 +22,33 @@ services:
     depends_on:
       - db-auth
 
-  microservices-product:
-    build:
-      context: ./chemin_vers_votre_app2
-    ports:
-      - "4000:4000"
-    environment:
-      POSTGRES_HOST: db-product
-      POSTGRES_PORT: 5432
-    depends_on:
-      - db-product
+#  microservices-product:
+#    build:
+#      context: ./chemin_vers_votre_app2
+#    ports:
+#      - "4000:4000"
+#    environment:
+#      POSTGRES_HOST: db-product
+#      POSTGRES_PORT: 5432
+#    depends_on:
+#      - db-product
 
-  microservices-gateway:
+#  microservices-gateway:
+#    build:
+#      context: ./chemin_vers_votre_gateway
+#    ports:
+#      - "5000:5000"
+#    environment:
+#      AUTH_URL: http://microservices-auth:3000/ # L'URL de l'authentification
+#      PRODUCT_URL: http://microservices-product:4000/ # L'URL du produit
+
+  nuxt3-app:
     build:
-      context: ./chemin_vers_votre_gateway
+      context: ./microservices/microservices-front
     ports:
-      - "5000:5000"
-    environment:
-      AUTH_URL: http://microservices-auth:3000/ # L'URL de l'authentification
-      PRODUCT_URL: http://microservices-product:4000/ # L'URL du produit
+      - "3001:3000"
+    volumes:
+      - ./microservices/microservices-front:/app
 
   db-auth:
     image: mysql
@@ -49,9 +57,9 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
 
-  db-product:
-    image: postgres
-    environment:
-      POSTGRES_DB: db-products
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+# db-product:
+#   image: postgres
+#   environment:
+#     POSTGRES_DB: db-products
+#     POSTGRES_USER: admin
+#     POSTGRES_PASSWORD: admin
