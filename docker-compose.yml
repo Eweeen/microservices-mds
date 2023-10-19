@@ -1,11 +1,15 @@
 version: '3'
 services:
-  nginx:
-    image: nginx
+  apache:
+    image: httpd
     ports:
       - "80:80"
     volumes:
-      - ./ngnix/nginx.conf:/etc/nginx/nginx.conf
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    depends_on:
+      - microservices-auth
+      - microservices-product
+      - microservices-gateway
 
   microservices-auth:
     build:
@@ -13,10 +17,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      POSTGRES_HOST: db1
+      POSTGRES_HOST: db-auth
       POSTGRES_PORT: 5432
     depends_on:
-      - db1
+      - db-auth
 
   microservices-product:
     build:
@@ -24,10 +28,10 @@ services:
     ports:
       - "4000:4000"
     environment:
-      POSTGRES_HOST: db2
+      POSTGRES_HOST: db-product
       POSTGRES_PORT: 5432
     depends_on:
-      - db2
+      - db-product
 
   microservices-gateway:
     build:
@@ -35,15 +39,15 @@ services:
     ports:
       - "5000:5000"
     environment:
-      AUTH_URL: http://microservices-gateway:5000/
-      PRODUCT_URL: http://microservices-gateway:5000/
+      AUTH_URL: http://microservices-auth:3000/ # L'URL de l'authentification
+      PRODUCT_URL: http://microservices-product:4000/ # L'URL du produit
 
   db-auth:
     image: mysql
     environment:
-      POSTGRES_DB: db-auth
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      MYSQL_DATABASE: db-auth
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
 
   db-product:
     image: postgres
