@@ -13,7 +13,7 @@ services:
 
   microservices-auth:
     build:
-      context: ./chemin_vers_votre_app1
+      context: ./microservices/microservices-auth
     ports:
       - "3000:3000"
     environment:
