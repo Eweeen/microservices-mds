@@ -1,30 +1,38 @@
 version: '3'
 services:
-# apache:
-#   image: httpd
-#   ports:
-#     - "80:80"
-#   volumes:
-#     - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
-#   depends_on:
-#     - microservices-auth
-#     #- microservices-product
-#     #- microservices-gateway
+  apache:
+    image: httpd
+    ports:
+      - "8080:80"
+    volumes:
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    depends_on:
+      - microservices-gateway
+      - microservices-auth
+#      - microservices-product
 
-# microservices-auth:
-#   build:
-#     context: microservices/microservices-auth-OLD
-#   ports:
-#     - "3000:3000"
-#   environment:
-#     POSTGRES_HOST: db-auth
-#     POSTGRES_PORT: 5432
-#   depends_on:
-#     - db-auth
+  microservices-gateway:
+    build:
+      context: ./microservices/microservices-gateway
+    ports:
+      - "3001:3001"
+    environment:
+      AUTH_URL: http://microservices-auth:50051/ # L'URL de l'authentification
+
+  microservices-auth:
+    build:
+      context: ./microservices/microservices-auth
+    ports:
+      - "50051:50051"
+    environment:
+      POSTGRES_HOST: db-auth
+      POSTGRES_PORT: 5432
+    depends_on:
+      - db-auth
 
 #  microservices-product:
 #    build:
-#      context: ./chemin_vers_votre_app2
+#      context: ./microservices/microservices-product
 #    ports:
 #      - "4000:4000"
 #    environment:
@@ -33,23 +41,14 @@ services:
 #    depends_on:
 #      - db-product
 
-#  microservices-gateway:
-#    build:
-#      context: ./chemin_vers_votre_gateway
-#    ports:
-#      - "5000:5000"
-#    environment:
-#      AUTH_URL: http://microservices-auth:3000/ # L'URL de l'authentification
-#      PRODUCT_URL: http://microservices-product:4000/ # L'URL du produit
-
-#  nuxt3-app:
-#    build:
-#      context: ./microservices/microservices-front
-#    ports:
-#      - "3001:3000"
+  nuxt3-app:
+    build:
+      context: ./microservices/microservices-front
+    ports:
+      - "3000:3000"
 #    volumes:
 #      - ./microservices/microservices-front:/app
-#
+
   db-auth:
     image: postgres:latest
     container_name: db-auth
@@ -57,7 +56,7 @@ services:
     expose:
       - 5432
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_DB: db-auth
       POSTGRES_USER: admin
