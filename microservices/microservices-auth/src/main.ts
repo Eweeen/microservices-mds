@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './auth/filter/http-exception.filter';
 import { protobufPackage } from './auth/auth.pb';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app: INestMicroservice = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.GRPC,
     options: {

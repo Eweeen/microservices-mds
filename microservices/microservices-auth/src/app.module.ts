@@ -5,11 +5,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-// AppModule.ts
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost', // Utilisez le nom du service Docker comme hôte
+      host: 'db-auth', // Utilisez le nom du service Docker comme hôte
       port: 5432,
       database: 'db-auth',
       username: 'admin',
@@ -19,7 +18,6 @@ import { AuthModule } from './auth/auth.module';
     }),
     AuthModule,
   ],
-
   controllers: [AppController],
   providers: [AppService],
 })
